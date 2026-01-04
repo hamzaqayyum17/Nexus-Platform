@@ -107,3 +107,41 @@
 ## Authentication UI
 - Improved login form UI consistency.
 - Updated input fields for better readability and accessibility
+
+## Meeting Scheduling Calendar (Milestone 2)
+
+### pages/dashboard/calendar/
+
+- CalendarPage.tsx – Main calendar interface for scheduling meetings.
+
+#### Features:
+
+- Displays a full calendar UI (FullCalendar / React-Calendar) integrated with the dashboard.
+
+- Users can add, edit, and remove availability slots.
+
+- Supports sending, accepting, and declining meeting requests.
+
+- Displays confirmed meetings directly on the dashboard calendar for quick overview.
+
+### Sidebar Integration
+
+- Calendar link added to the sidebar for easy access:
+
+##### Placement: 
+    Dashboard → Messages → Calendar → Documents
+
+
+- Ensures logical flow and intuitive navigation for both entrepreneurs and investors.
+
+### Milestone 2 – Fully Complete 
+
+- Calendar UI implemented
+
+- Availability slots functionality complete
+
+- Meeting request flow fully functional
+
+- Confirmed meetings shown on dashboard
+
+- Sidebar navigation updated
