@@ -145,3 +145,13 @@
 - Confirmed meetings shown on dashboard
 
 - Sidebar navigation updated
+
+## Milestone 3 – Video Calling (Frontend Mock)
+
+- Implemented video call UI using browser media APIs
+
+- Added start and end call functionality
+
+- Implemented microphone and camera toggle controls
+
+- Video calling is integrated into the dashboard layout

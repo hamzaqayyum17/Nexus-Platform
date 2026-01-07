@@ -28,6 +28,8 @@ import { DocumentsPage } from './pages/documents/DocumentsPage';
 import { SettingsPage } from './pages/settings/SettingsPage';
 import { HelpPage } from './pages/help/HelpPage';
 import { DealsPage } from './pages/deals/DealsPage';
+import VideoCallPage from './pages/video/VideoCallPage';
+
 
 // Chat Pages
 import { ChatPage } from './pages/chat/ChatPage';
@@ -46,6 +48,8 @@ function App() {
             <Route path="entrepreneur" element={<EntrepreneurDashboard />} />
             <Route path="investor" element={<InvestorDashboard />} />
             <Route path="calendar" element={<CalendarPage />} />
+            <Route path="video-call" element={<VideoCallPage />} />
+
           </Route>
 
 
