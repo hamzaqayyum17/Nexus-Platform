@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   FileText,
   Upload,
@@ -24,28 +24,20 @@ interface DocumentItem {
   status: DocStatus;
 }
 
-const initialDocuments: DocumentItem[] = [
-  {
-    id: 1,
-    name: 'Pitch Deck 2024.pdf',
-    type: 'PDF',
-    size: '2.4 MB',
-    lastModified: '2024-02-15',
-    shared: true,
-    status: 'Draft',
-  },
-];
-
-export const DocumentsPage: React.FC = () => {
-  const [documents, setDocuments] = useState<DocumentItem[]>(initialDocuments);
+const DocumentsPage = () => {
+  const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<DocumentItem | null>(null);
 
+  // ✅ IMPORTANT: file input ref
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // ✅ Upload handler
   const handleUpload = (file: File) => {
     const newDoc: DocumentItem = {
       id: Date.now(),
       name: file.name,
       type: file.type.includes('pdf') ? 'PDF' : 'Document',
-      size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+      size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
       lastModified: new Date().toISOString().split('T')[0],
       shared: false,
       status: 'Draft',
@@ -61,109 +53,94 @@ export const DocumentsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header */}
+    <div className="space-y-6">
+      {/* HEADER */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Document Chamber
-          </h1>
+          <h1 className="text-2xl font-bold">Document Chamber</h1>
           <p className="text-gray-600">
-            Upload, review and sign your deals & contracts
+            Upload, review and sign documents
           </p>
         </div>
 
-        {/* Upload */}
+        {/* 🔥 WORKING UPLOAD */}
         <input
+          ref={fileInputRef}
           type="file"
           accept=".pdf,.doc,.docx"
           hidden
-          id="upload-doc"
           onChange={(e) => {
             if (e.target.files?.[0]) {
               handleUpload(e.target.files[0]);
             }
           }}
         />
-        <label htmlFor="upload-doc">
-          <Button leftIcon={<Upload size={18} />}>
-            Upload Document
-          </Button>
-        </label>
+
+        <Button
+          leftIcon={<Upload size={18} />}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          Upload Document
+        </Button>
       </div>
 
-      {/* Documents List */}
+      {/* DOCUMENT LIST */}
       <Card>
         <CardHeader>
-          <h2 className="text-lg font-medium text-gray-900">
-            All Documents
-          </h2>
+          <h2 className="text-lg font-medium">All Documents</h2>
         </CardHeader>
 
         <CardBody>
+          {documents.length === 0 && (
+            <p className="text-sm text-gray-500">
+              No documents uploaded yet
+            </p>
+          )}
+
           <div className="space-y-2">
             {documents.map((doc) => (
               <div
                 key={doc.id}
                 className="flex items-center p-4 hover:bg-gray-50 rounded-lg"
               >
-                <div className="p-2 bg-primary-50 rounded-lg mr-4">
-                  <FileText size={22} className="text-primary-600" />
+                <div className="p-2 bg-gray-100 rounded mr-4">
+                  <FileText />
                 </div>
 
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-medium text-gray-900">
-                      {doc.name}
-                    </h3>
-
-                    {doc.shared && (
-                      <Badge size="sm" variant="secondary">
-                        Shared
-                      </Badge>
-                    )}
-
-                    <Badge
-                      size="sm"
-                      variant={statusBadgeVariant(doc.status)}
-                    >
-                      {doc.status}
-                    </Badge>
-                  </div>
-
-                  <div className="text-sm text-gray-500 mt-1">
-                    {doc.type} • {doc.size} • Modified {doc.lastModified}
-                  </div>
+                  <h3 className="font-medium">{doc.name}</h3>
+                  <p className="text-sm text-gray-500">
+                    {doc.type} • {doc.size}
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <Badge variant={statusBadgeVariant(doc.status)}>
+                  {doc.status}
+                </Badge>
+
+                <div className="flex gap-2 ml-4">
                   <Button
-                    variant="ghost"
                     size="sm"
+                    variant="ghost"
                     onClick={() => setSelectedDoc(doc)}
                   >
-                    <Eye size={18} />
+                    <Eye size={16} />
                   </Button>
 
-                  <Button variant="ghost" size="sm">
-                    <Download size={18} />
-                  </Button>
-
-                  <Button variant="ghost" size="sm">
-                    <Share2 size={18} />
+                  <Button size="sm" variant="ghost">
+                    <Download size={16} />
                   </Button>
 
                   <Button
-                    variant="ghost"
                     size="sm"
-                    className="text-error-600"
+                    variant="ghost"
                     onClick={() =>
                       setDocuments((prev) =>
                         prev.filter((d) => d.id !== doc.id)
                       )
                     }
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                   </Button>
                 </div>
               </div>
@@ -172,29 +149,24 @@ export const DocumentsPage: React.FC = () => {
         </CardBody>
       </Card>
 
-      {/* Preview + Signature Modal */}
+      {/* PREVIEW + SIGN */}
       {selectedDoc && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white w-[520px] rounded-lg p-6 space-y-4">
-            <h2 className="text-lg font-semibold">
-              {selectedDoc.name}
-            </h2>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded w-[520px] space-y-4">
+            <h2 className="font-semibold">{selectedDoc.name}</h2>
 
-            <div className="border h-40 flex items-center justify-center text-gray-500">
-              PDF / DOC Preview (Mock)
+            <div className="border h-40 flex items-center justify-center">
+              PDF Preview (Mock)
             </div>
 
-            <div>
-              <p className="font-medium mb-1">E-Signature</p>
-              <SignatureCanvas
-                penColor="black"
-                canvasProps={{
-                  width: 460,
-                  height: 150,
-                  className: 'border rounded',
-                }}
-              />
-            </div>
+            <SignatureCanvas
+              penColor="black"
+              canvasProps={{
+                width: 460,
+                height: 150,
+                className: 'border',
+              }}
+            />
 
             <div className="flex justify-end gap-2">
               <Button
@@ -226,3 +198,5 @@ export const DocumentsPage: React.FC = () => {
     </div>
   );
 };
+
+export default DocumentsPage;
