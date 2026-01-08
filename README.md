@@ -155,3 +155,12 @@
 - Implemented microphone and camera toggle controls
 
 - Video calling is integrated into the dashboard layout
+
+## Milestone-4 Document upload
+
+- Upload PDF / DOC
+- Preview modal
+- E-Signature mock
+- Status: Draft → Signed
+- Delete document
+- Clean professional UI
