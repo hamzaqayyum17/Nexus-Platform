@@ -1,11 +1,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Video } from 'lucide-react';
-
 import {
-  Home, Building2, CircleDollarSign, Users, MessageCircle,
-  Bell, FileText, Settings, HelpCircle
+  Home,
+  Building2,
+  CircleDollarSign,
+  Users,
+  MessageCircle,
+  Bell,
+  FileText,
+  Settings,
+  HelpCircle,
+  Video
 } from 'lucide-react';
 
 interface SidebarItemProps {
@@ -19,9 +25,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ to, icon, text }) => {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center py-2.5 px-4 rounded-md transition-colors duration-200 ${isActive
-          ? 'bg-primary-50 text-primary-700'
-          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+        `flex items-center py-2.5 px-4 rounded-md transition-colors duration-200 ${
+          isActive
+            ? 'bg-primary-50 text-primary-700'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
         }`
       }
     >
@@ -36,40 +43,40 @@ export const Sidebar: React.FC = () => {
 
   if (!user) return null;
 
-  // Define sidebar items based on user role
-  // Entrepreneur items
+  /* ================= ENTREPRENEUR ================= */
   const entrepreneurItems = [
     { to: '/dashboard/entrepreneur', icon: <Home size={20} />, text: 'Dashboard' },
     { to: '/profile/entrepreneur/' + user.id, icon: <Building2 size={20} />, text: 'My Startup' },
     { to: '/investors', icon: <CircleDollarSign size={20} />, text: 'Find Investors' },
     { to: '/messages', icon: <MessageCircle size={20} />, text: 'Messages' },
     { to: '/notifications', icon: <Bell size={20} />, text: 'Notifications' },
+
+    // ✅ DOCUMENT CHAMBER
     { to: '/documents', icon: <FileText size={20} />, text: 'Documents' },
 
     { to: '/dashboard/calendar', icon: <>📅</>, text: 'Calendar' },
     { to: '/dashboard/video-call', icon: <Video size={20} />, text: 'Video Call' },
   ];
 
+  /* ================= INVESTOR ================= */
+  const investorItems = [
+    { to: '/dashboard/investor', icon: <Home size={20} />, text: 'Dashboard' },
+    { to: '/profile/investor/' + user.id, icon: <CircleDollarSign size={20} />, text: 'My Portfolio' },
+    { to: '/entrepreneurs', icon: <Users size={20} />, text: 'Find Startups' },
+    { to: '/messages', icon: <MessageCircle size={20} />, text: 'Messages' },
+    { to: '/notifications', icon: <Bell size={20} />, text: 'Notifications' },
 
-  // Investor items
-const investorItems = [
-  { to: '/dashboard/investor', icon: <Home size={20} />, text: 'Dashboard' },
-  { to: '/profile/investor/' + user.id, icon: <CircleDollarSign size={20} />, text: 'My Portfolio' },
-  { to: '/entrepreneurs', icon: <Users size={20} />, text: 'Find Startups' },
-  { to: '/messages', icon: <MessageCircle size={20} />, text: 'Messages' },
-  { to: '/notifications', icon: <Bell size={20} />, text: 'Notifications' },
-  { to: '/documents', icon: <FileText size={20} />, text: 'Documents' },
+    // ✅ DOCUMENT CHAMBER
+    { to: '/documents', icon: <FileText size={20} />, text: 'Documents' },
 
-  { to: '/deals', icon: <FileText size={20} />, text: 'Deals' },
-  { to: '/dashboard/calendar', icon: <>📅</>, text: 'Calendar' },
-  { to: '/dashboard/video-call', icon: <Video />, text: 'Video Call' }
-];
+    { to: '/deals', icon: <FileText size={20} />, text: 'Deals' },
+    { to: '/dashboard/calendar', icon: <>📅</>, text: 'Calendar' },
+    { to: '/dashboard/video-call', icon: <Video size={20} />, text: 'Video Call' },
+  ];
 
+  const sidebarItems =
+    user.role === 'entrepreneur' ? entrepreneurItems : investorItems;
 
-
-  const sidebarItems = user.role === 'entrepreneur' ? entrepreneurItems : investorItems;
-
-  // Common items at the bottom
   const commonItems = [
     { to: '/settings', icon: <Settings size={20} />, text: 'Settings' },
     { to: '/help', icon: <HelpCircle size={20} />, text: 'Help & Support' },
@@ -81,12 +88,7 @@ const investorItems = [
         <div className="flex-1 py-4 overflow-y-auto">
           <div className="px-3 space-y-1">
             {sidebarItems.map((item, index) => (
-              <SidebarItem
-                key={index}
-                to={item.to}
-                icon={item.icon}
-                text={item.text}
-              />
+              <SidebarItem key={index} {...item} />
             ))}
           </div>
 
@@ -96,12 +98,7 @@ const investorItems = [
             </h3>
             <div className="mt-2 space-y-1">
               {commonItems.map((item, index) => (
-                <SidebarItem
-                  key={index}
-                  to={item.to}
-                  icon={item.icon}
-                  text={item.text}
-                />
+                <SidebarItem key={index} {...item} />
               ))}
             </div>
           </div>
@@ -110,7 +107,9 @@ const investorItems = [
         <div className="p-4 border-t border-gray-200">
           <div className="bg-gray-50 rounded-md p-3">
             <p className="text-xs text-gray-600">Need assistance?</p>
-            <h4 className="text-sm font-medium text-gray-900 mt-1">Contact Support</h4>
+            <h4 className="text-sm font-medium text-gray-900 mt-1">
+              Contact Support
+            </h4>
             <a
               href="mailto:support@businessnexus.com"
               className="mt-2 inline-flex items-center text-xs font-medium text-primary-600 hover:text-primary-500"
