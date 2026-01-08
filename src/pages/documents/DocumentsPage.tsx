@@ -55,7 +55,8 @@ const DocumentsPage = () => {
   return (
     <div className="space-y-6">
       {/* HEADER */}
-      <div className="flex justify-between items-center">
+      {/* HEADER */}
+      <div className="flex justify-between items-center gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold">Document Chamber</h1>
           <p className="text-gray-600">
@@ -63,26 +64,27 @@ const DocumentsPage = () => {
           </p>
         </div>
 
-        {/* 🔥 WORKING UPLOAD */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf,.doc,.docx"
-          hidden
-          onChange={(e) => {
-            if (e.target.files?.[0]) {
-              handleUpload(e.target.files[0]);
-            }
-          }}
-        />
+        {/* ✅ UPLOAD BUTTON FIX */}
+        <div className="relative">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.doc,.docx"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            onChange={(e) => {
+              if (e.target.files?.[0]) {
+                handleUpload(e.target.files[0]);
+                e.target.value = ''; // IMPORTANT RESET
+              }
+            }}
+          />
 
-        <Button
-          leftIcon={<Upload size={18} />}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          Upload Document
-        </Button>
+          <Button leftIcon={<Upload size={18} />}>
+            Upload Document
+          </Button>
+        </div>
       </div>
+
 
       {/* DOCUMENT LIST */}
       <Card>
