@@ -11,8 +11,9 @@ import {
   FileText,
   Settings,
   HelpCircle,
-  Video
+  VideoIcon
 } from 'lucide-react';
+
 
 interface SidebarItemProps {
   to: string;
@@ -55,7 +56,8 @@ export const Sidebar: React.FC = () => {
     { to: '/documents', icon: <FileText size={20} />, text: 'Documents' },
 
     { to: '/dashboard/calendar', icon: <>📅</>, text: 'Calendar' },
-    { to: '/dashboard/video-call', icon: <Video size={20} />, text: 'Video Call' },
+    { to: '/dashboard/video-call', icon: <VideoIcon size={20} />, text: 'Video Call' }
+
   ];
 
   /* ================= INVESTOR ================= */
