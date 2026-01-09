@@ -4,7 +4,6 @@ import {
   Upload,
   Download,
   Trash2,
-  Share2,
   Eye,
 } from 'lucide-react';
 import SignatureCanvas from 'react-signature-canvas';
@@ -20,7 +19,6 @@ interface DocumentItem {
   type: string;
   size: string;
   lastModified: string;
-  shared: boolean;
   status: DocStatus;
 }
 
@@ -28,25 +26,22 @@ const DocumentsPage = () => {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<DocumentItem | null>(null);
 
-  // ✅ IMPORTANT: file input ref
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ Upload handler
   const handleUpload = (file: File) => {
     const newDoc: DocumentItem = {
       id: Date.now(),
       name: file.name,
       type: file.type.includes('pdf') ? 'PDF' : 'Document',
       size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
-      lastModified: new Date().toISOString().split('T')[0],
-      shared: false,
+      lastModified: new Date().toLocaleDateString(),
       status: 'Draft',
     };
 
-    setDocuments((prev) => [...prev, newDoc]);
+    setDocuments(prev => [...prev, newDoc]);
   };
 
-  const statusBadgeVariant = (status: DocStatus) => {
+  const badgeVariant = (status: DocStatus) => {
     if (status === 'Signed') return 'success';
     if (status === 'In Review') return 'warning';
     return 'secondary';
@@ -55,8 +50,7 @@ const DocumentsPage = () => {
   return (
     <div className="space-y-6">
       {/* HEADER */}
-      {/* HEADER */}
-      <div className="flex justify-between items-center gap-4 flex-wrap">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Document Chamber</h1>
           <p className="text-gray-600">
@@ -64,27 +58,27 @@ const DocumentsPage = () => {
           </p>
         </div>
 
-        {/* ✅ UPLOAD BUTTON FIX */}
-        <div className="relative">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.doc,.docx"
-            className="absolute inset-0 opacity-0 cursor-pointer"
-            onChange={(e) => {
-              if (e.target.files?.[0]) {
-                handleUpload(e.target.files[0]);
-                e.target.value = ''; // IMPORTANT RESET
-              }
-            }}
-          />
+        {/* REAL WORKING UPLOAD */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,.doc,.docx"
+          hidden
+          onChange={(e) => {
+            if (e.target.files?.[0]) {
+              handleUpload(e.target.files[0]);
+              e.target.value = '';
+            }
+          }}
+        />
 
-          <Button leftIcon={<Upload size={18} />}>
-            Upload Document
-          </Button>
-        </div>
+        <Button
+          leftIcon={<Upload size={18} />}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          Upload Document
+        </Button>
       </div>
-
 
       {/* DOCUMENT LIST */}
       <Card>
@@ -103,20 +97,20 @@ const DocumentsPage = () => {
             {documents.map((doc) => (
               <div
                 key={doc.id}
-                className="flex items-center p-4 hover:bg-gray-50 rounded-lg"
+                className="flex items-center p-4 rounded-lg hover:bg-gray-50"
               >
                 <div className="p-2 bg-gray-100 rounded mr-4">
-                  <FileText />
+                  <FileText size={20} />
                 </div>
 
                 <div className="flex-1">
                   <h3 className="font-medium">{doc.name}</h3>
                   <p className="text-sm text-gray-500">
-                    {doc.type} • {doc.size}
+                    {doc.type} • {doc.size} • {doc.lastModified}
                   </p>
                 </div>
 
-                <Badge variant={statusBadgeVariant(doc.status)}>
+                <Badge variant={badgeVariant(doc.status)}>
                   {doc.status}
                 </Badge>
 
@@ -129,16 +123,12 @@ const DocumentsPage = () => {
                     <Eye size={16} />
                   </Button>
 
-                  <Button size="sm" variant="ghost">
-                    <Download size={16} />
-                  </Button>
-
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() =>
-                      setDocuments((prev) =>
-                        prev.filter((d) => d.id !== doc.id)
+                      setDocuments(prev =>
+                        prev.filter(d => d.id !== doc.id)
                       )
                     }
                   >
@@ -151,13 +141,13 @@ const DocumentsPage = () => {
         </CardBody>
       </Card>
 
-      {/* PREVIEW + SIGN */}
+      {/* SIGN MODAL */}
       {selectedDoc && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded w-[520px] space-y-4">
             <h2 className="font-semibold">{selectedDoc.name}</h2>
 
-            <div className="border h-40 flex items-center justify-center">
+            <div className="border h-40 flex items-center justify-center text-gray-500">
               PDF Preview (Mock)
             </div>
 
@@ -166,7 +156,7 @@ const DocumentsPage = () => {
               canvasProps={{
                 width: 460,
                 height: 150,
-                className: 'border',
+                className: 'border rounded',
               }}
             />
 
@@ -181,8 +171,8 @@ const DocumentsPage = () => {
               <Button
                 variant="success"
                 onClick={() => {
-                  setDocuments((prev) =>
-                    prev.map((d) =>
+                  setDocuments(prev =>
+                    prev.map(d =>
                       d.id === selectedDoc.id
                         ? { ...d, status: 'Signed' }
                         : d

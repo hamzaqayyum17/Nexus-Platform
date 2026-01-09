@@ -7,7 +7,7 @@ import { Sidebar } from './Sidebar';
 
 export const DashboardLayout = () => {
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen overflow-y-auto">
       {/* SIDEBAR */}
       <Sidebar />
 

@@ -160,7 +160,5 @@
 
 - Upload PDF / DOC
 - Preview modal
-- E-Signature mock
-- Status: Draft → Signed
 - Delete document
 - Clean professional UI
