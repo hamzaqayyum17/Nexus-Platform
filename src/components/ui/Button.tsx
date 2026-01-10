@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'link' | 'success' | 'warning' | 'error';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 

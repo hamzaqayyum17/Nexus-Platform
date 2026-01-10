@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { CreditCard } from 'lucide-react';
 import {
   Home,
   Building2,
@@ -56,7 +57,8 @@ export const Sidebar: React.FC = () => {
     { to: '/documents', icon: <FileText size={20} />, text: 'Documents' },
 
     { to: '/dashboard/calendar', icon: <>📅</>, text: 'Calendar' },
-    { to: '/dashboard/video-call', icon: <VideoIcon size={20} />, text: 'Video Call' }
+    { to: '/dashboard/video-call', icon: <VideoIcon size={20} />, text: 'Video Call' },
+    { to: '/payments', icon: <CreditCard size={20} />, text: 'Payments' },
 
   ];
 
@@ -73,7 +75,8 @@ export const Sidebar: React.FC = () => {
 
     { to: '/deals', icon: <FileText size={20} />, text: 'Deals' },
     { to: '/dashboard/calendar', icon: <>📅</>, text: 'Calendar' },
-    { to: '/dashboard/video-call', icon: <Video size={20} />, text: 'Video Call' },
+    { to: '/dashboard/video-call', icon: <VideoIcon size={20} />, text: 'Video Call' },
+    { to: '/payments', icon: <CreditCard size={20} />, text: 'Payments' },
   ];
 
   const sidebarItems =
