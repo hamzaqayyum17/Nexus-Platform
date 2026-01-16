@@ -10,7 +10,9 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  otpRequired: boolean;
   login: (email: string, password: string) => Promise<void>;
+  verifyOtp: (otp: string) => Promise<void>;
   register: (
     name: string,
     email: string,
@@ -20,10 +22,12 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [otpRequired, setOtpRequired] = useState(false);
+  const [tempUser, setTempUser] = useState<User | null>(null);
 
   const login = async (email: string, password: string) => {
     if (!email || !password) {
@@ -34,11 +38,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       ? 'investor'
       : 'entrepreneur';
 
-    setUser({
+    // OTP REQUIRED
+    setTempUser({
       name: 'Demo User',
       email,
       role,
     });
+
+    setOtpRequired(true);
+  };
+
+  const verifyOtp = async (otp: string) => {
+    if (otp !== '123456') {
+      throw new Error('Invalid OTP');
+    }
+
+    setUser(tempUser);
+    setTempUser(null);
+    setOtpRequired(false);
   };
 
   const register = async (
@@ -50,14 +67,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser({ name, email, role });
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    setOtpRequired(false);
+    setTempUser(null);
+  };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: Boolean(user),
+        isAuthenticated: !!user,
+        otpRequired,
         login,
+        verifyOtp,
         register,
         logout,
       }}

@@ -12,7 +12,6 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { UserRole } from '../../types';
-
 /* ✅ PASSWORD STRENGTH HELPER (TOP PE) */
 const getPasswordStrength = (password: string) => {
   let score = 0;
