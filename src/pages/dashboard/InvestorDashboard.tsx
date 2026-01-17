@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, PieChart, Filter, Search, PlusCircle } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
@@ -7,7 +7,6 @@ import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
 import { EntrepreneurCard } from '../../components/entrepreneur/EntrepreneurCard';
 import { useAuth } from '../../context/AuthContext';
-import { Entrepreneur } from '../../types';
 import { entrepreneurs } from '../../data/users';
 import { getRequestsFromInvestor } from '../../data/collaborationRequests';
 
@@ -17,10 +16,9 @@ export const InvestorDashboard: React.FC = () => {
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   
   if (!user) return null;
-  
+
   // Get collaboration requests sent by this investor
   const sentRequests = getRequestsFromInvestor(user.id);
-  const requestedEntrepreneurIds = sentRequests.map(req => req.entrepreneurId);
   
   // Filter entrepreneurs based on search and industry filters
   const filteredEntrepreneurs = entrepreneurs.filter(entrepreneur => {
@@ -41,14 +39,14 @@ export const InvestorDashboard: React.FC = () => {
   // Get unique industries for filter
   const industries = Array.from(new Set(entrepreneurs.map(e => e.industry)));
   
-  // Toggle industry selection
-  const toggleIndustry = (industry: string) => {
+  // ✅ Memoized toggle function to prevent unnecessary re-renders
+  const toggleIndustry = useCallback((industry: string) => {
     setSelectedIndustries(prevSelected => 
       prevSelected.includes(industry)
         ? prevSelected.filter(i => i !== industry)
         : [...prevSelected, industry]
     );
-  };
+  }, []);
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -86,14 +84,17 @@ export const InvestorDashboard: React.FC = () => {
             
             <div className="flex flex-wrap gap-2">
               {industries.map(industry => (
-                <Badge
+                <button
                   key={industry}
-                  variant={selectedIndustries.includes(industry) ? 'primary' : 'gray'}
-                  className="cursor-pointer"
                   onClick={() => toggleIndustry(industry)}
+                  className="cursor-pointer"
                 >
-                  {industry}
-                </Badge>
+                  <Badge
+                    variant={selectedIndustries.includes(industry) ? 'primary' : 'gray'}
+                  >
+                    {industry}
+                  </Badge>
+                </button>
               ))}
             </div>
           </div>

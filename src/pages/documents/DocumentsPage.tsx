@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import {
   FileText,
   Upload,
-  Download,
   Trash2,
   Eye,
 } from 'lucide-react';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Search, Filter, MapPin } from 'lucide-react';
 import { Input } from '../../components/ui/Input';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
@@ -42,21 +42,22 @@ export const EntrepreneursPage: React.FC = () => {
     return matchesSearch && matchesIndustry && matchesFunding;
   });
   
-  const toggleIndustry = (industry: string) => {
+  // ✅ Memoized toggle functions to prevent unnecessary re-renders
+  const toggleIndustry = useCallback((industry: string) => {
     setSelectedIndustries(prev => 
       prev.includes(industry)
         ? prev.filter(i => i !== industry)
         : [...prev, industry]
     );
-  };
+  }, []);
   
-  const toggleFundingRange = (range: string) => {
+  const toggleFundingRange = useCallback((range: string) => {
     setSelectedFundingRange(prev => 
       prev.includes(range)
         ? prev.filter(r => r !== range)
         : [...prev, range]
     );
-  };
+  }, []);
   
   return (
     <div className="space-y-6 animate-fade-in">

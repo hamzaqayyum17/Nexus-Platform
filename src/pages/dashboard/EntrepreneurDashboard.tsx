@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Bell, Calendar, TrendingUp, AlertCircle, PlusCircle } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
@@ -14,15 +14,18 @@ import { investors } from '../../data/users';
 export const EntrepreneurDashboard: React.FC = () => {
   const { user } = useAuth();
   const [collaborationRequests, setCollaborationRequests] = useState<CollaborationRequest[]>([]);
-  const [recommendedInvestors, setRecommendedInvestors] = useState(investors.slice(0, 3));
+  const [recommendedInvestors] = useState(investors.slice(0, 3));
   
-  useEffect(() => {
-    if (user) {
-      // Load collaboration requests
+  const loadRequests = useCallback(() => {
+    if (user?.id) {
       const requests = getRequestsForEntrepreneur(user.id);
       setCollaborationRequests(requests);
     }
-  }, [user]);
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadRequests();
+  }, [loadRequests]);
   
   const handleRequestStatusUpdate = (requestId: string, status: 'accepted' | 'rejected') => {
     setCollaborationRequests(prevRequests => 

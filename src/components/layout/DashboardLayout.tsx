@@ -1,11 +1,15 @@
-import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 
 
 export const DashboardLayout = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="flex h-screen overflow-y-auto">
       {/* SIDEBAR */}
